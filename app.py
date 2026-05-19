@@ -8,7 +8,7 @@ with st.form('eat_form'):
     "カロリー(kcal)",
     min_value=0,
     step=1
-)
+    )
     protein = st.number_input("タンパク質を入力してください")
     fat = st.number_input("脂質を入力してください")
     carb = st.number_input("炭水化物を入力してください")
