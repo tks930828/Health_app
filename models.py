@@ -12,3 +12,9 @@ class Meal(Base):
     fat = Column(Float)
     carb = Column(Float)
 
+class Weightlog(Base):
+    __tablename__= "weight_logs"
+
+    id = Column(Integer,primary_key=True)
+    date = Column(date)
+    weight = Column(Float)
