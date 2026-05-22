@@ -1,5 +1,11 @@
 import streamlit as st
 
+from database import engine
+from models import Base
+
+#テーブル作成
+Base.metadata.create_all(bind=engine)
+
 #食事入力フォーム
 with st.form('eat_form'):
     meal_date = st.date_input("日付を入力してください")
@@ -19,7 +25,7 @@ with st.form('eat_form'):
 
 #体重入力フォーム
 with st.form('weight_form'):
-    weight_date = st.datetime_input("日付を入力してください")
+    weight_date = st.date_input("日付を入力してください")
     weight = st.number_input(
     "体重(kg)",
     min_value=0.0,
