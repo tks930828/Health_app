@@ -16,5 +16,5 @@ class Weightlog(Base):
     __tablename__= "weight_logs"
 
     id = Column(Integer,primary_key=True)
-    date = Column(date)
+    date = Column(Date)
     weight = Column(Float)
