@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, String, Float, Date
 from database import Base
 
+#Mealのテーブル定義
 class Meal(Base):
     __tablename__="meals"
 
@@ -12,6 +13,7 @@ class Meal(Base):
     fat = Column(Float)
     carb = Column(Float)
 
+#weightlogのテーブル定義
 class Weightlog(Base):
     __tablename__= "weight_logs"
 
