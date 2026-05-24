@@ -33,9 +33,9 @@ with st.form('eat_form'):
             date = meal_date,
             meal_name = meal,
             calories = calories,
-            protein = protein,
-            fat = fat,
-            carb = carb
+            protein = protein,#単位
+            fat = fat,#単位
+            carb = carb#単位
         )
 
         #insert実行準備
@@ -56,4 +56,16 @@ with st.form('weight_form'):
     #送信ボタン
     weight_submitted = st.form_submit_button("送信")
     if weight_submitted:
+
+        #体重入力フォームのデータ作成
+        new_weight = Weightlog(
+            date = weight_date,
+            weight = weight,
+        )
+
+        #insert実行準備
+        session.add(new_weight)
+        #SQL実行(insert)
+        session.commit()
+
         st.success("体重を登録しました")
