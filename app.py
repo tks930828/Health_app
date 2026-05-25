@@ -1,3 +1,4 @@
+import pandas as pd
 import streamlit as st
 
 from database import engine
@@ -69,3 +70,28 @@ with st.form('weight_form'):
         session.commit()
 
         st.success("体重を登録しました")
+
+
+st.header("食事記録一覧")
+
+#DBからmealのデータを全件取得（select * from meals)
+meals = session.query(Meal).all()
+
+#dataframe用のリスト取得
+meal_data = []
+
+#for文で1件ずつ取得
+for meal in meals:
+
+    meal_data.append({
+        "日付":meal.date,
+        "食事名":meal.meal_name,
+        "カロリー":meal.calories,
+        "タンパク質":meal.protein,
+        "脂肪":meal.fat,
+        "炭水化物":meal.carb
+    })
+
+df_meals = pd.DataFrame(meal_data)
+
+st.dataframe(df_meals)
