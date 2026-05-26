@@ -92,6 +92,31 @@ for meal in meals:
         "炭水化物":meal.carb
     })
 
+#pandas_dataframe（2次元データ）
 df_meals = pd.DataFrame(meal_data)
 
+#streamlit表示
 st.dataframe(df_meals)
+
+st.header("体重記録一覧")
+
+#DBからweightのデータを全件取得（select * from weights)
+weights = session.query(Weightlog).all()
+
+#dataframe用のリスト取得
+weight_data = []
+
+#for文で1件ずつ取得
+for weight in weights:
+
+    weight_data.append({
+        "日付":weight.date,
+        "体重":weight.weight,
+    })
+
+#pandas_dataframe（2次元データ）
+df_weights = pd.DataFrame(weight_data)
+
+#streamlit表示
+st.dataframe(df_weights)
+
