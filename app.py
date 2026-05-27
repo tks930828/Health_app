@@ -17,13 +17,13 @@ with st.form('eat_form'):
     meal_date = st.date_input("日付を入力してください")
     meal = st.text_input("食事名を入力してください")
     calories = st.number_input(
-    "カロリー(kcal)",
+    "カロリー(kcal)を入力してください",
     min_value=0,
     step=1
     )
-    protein = st.number_input("タンパク質を入力してください")
-    fat = st.number_input("脂質を入力してください")
-    carb = st.number_input("炭水化物を入力してください")
+    protein = st.number_input("タンパク質(g)を入力してください")
+    fat = st.number_input("脂質(g)を入力してください")
+    carb = st.number_input("炭水化物(g)を入力してください")
 
     #送信ボタン
     meal_submitted = st.form_submit_button("送信")
@@ -91,6 +91,15 @@ for meal in meals:
         "脂肪":meal.fat,
         "炭水化物":meal.carb
     })
+#meal_dataをdataframe化
+df = pd.DataFrame(meal_data)
+
+#日別集計
+daily_calories = (
+    df.groupby("date")["calories"] #日付でgroupby
+    .sum() #合計
+    .reset_index() #dataframe化
+)
 
 #pandas_dataframe（2次元データ）
 df_meals = pd.DataFrame(meal_data)
