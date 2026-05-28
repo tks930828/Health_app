@@ -1,5 +1,6 @@
 import pandas as pd
 import streamlit as st
+import plotly.express as px
 
 from database import engine
 from database import SessionLocal
@@ -96,7 +97,7 @@ df = pd.DataFrame(meal_data)
 
 #日別集計
 daily_calories = (
-    df.groupby("date")["calories"] #日付でgroupby
+    df.groupby("日付")["カロリー"] #日付でgroupby
     .sum() #合計
     .reset_index() #dataframe化
 )
@@ -129,3 +130,14 @@ df_weights = pd.DataFrame(weight_data)
 #streamlit表示
 st.dataframe(df_weights)
 
+#折れ線グラフの作成
+fig = px.line(
+    df_weights,
+    x = 'date',
+    y = 'weight',
+    title = '体重推移'
+)
+
+#グラフの表示
+st.plotly_chart(fig)
+    
