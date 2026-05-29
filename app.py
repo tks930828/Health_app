@@ -85,19 +85,19 @@ meal_data = []
 for meal in meals:
 
     meal_data.append({
-        "日付":meal.date,
-        "食事名":meal.meal_name,
-        "カロリー":meal.calories,
-        "タンパク質":meal.protein,
-        "脂肪":meal.fat,
-        "炭水化物":meal.carb
+        "date":meal.date,
+        "meal_name":meal.meal_name,
+        "calories":meal.calories,
+        "protein":meal.protein,
+        "fat":meal.fat,
+        "carb":meal.carb
     })
 #meal_dataをdataframe化
 df = pd.DataFrame(meal_data)
 
 #日別集計
 daily_calories = (
-    df.groupby("日付")["カロリー"] #日付でgroupby
+    df.groupby("date")["calories"] #日付でgroupby
     .sum() #合計
     .reset_index() #dataframe化
 )
@@ -120,8 +120,8 @@ weight_data = []
 for weight in weights:
 
     weight_data.append({
-        "日付":weight.date,
-        "体重":weight.weight,
+        "date":weight.date,
+        "weight":weight.weight,
     })
 
 #pandas_dataframe（2次元データ）
