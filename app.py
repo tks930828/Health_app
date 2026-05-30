@@ -130,6 +130,16 @@ df_weights = pd.DataFrame(weight_data)
 #streamlit表示
 st.dataframe(df_weights)
 
+#棒グラフの作成
+fig = px.bar(
+    daily_calories,
+    x = 'date',
+    y = 'calories',
+    title = '日別カロリー摂取量'
+)
+#グラフの表示
+st.plotly_chart(fig)
+
 #折れ線グラフの作成
 fig = px.line(
     df_weights,
@@ -140,4 +150,5 @@ fig = px.line(
 
 #グラフの表示
 st.plotly_chart(fig)
+
     
