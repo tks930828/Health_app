@@ -145,10 +145,11 @@ fig = px.line(
     df_weights,
     x = 'date',
     y = 'weight',
-    title = '体重推移'
+    title = '体重推移',
+    markers = True
 )
+#x軸をカテゴリ軸として扱う
+fig.update_xaxes(type='category')
 
 #グラフの表示
 st.plotly_chart(fig)
-
-    
