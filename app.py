@@ -13,6 +13,9 @@ Base.metadata.create_all(bind=engine)
 #DB構築
 session = SessionLocal()
 
+#tabの作成
+tab1, tab2 = st.tabs(["食事", "体重"])
+
 #食事入力フォーム
 with st.form('eat_form'):
     meal_date = st.date_input("日付を入力してください")
@@ -135,8 +138,12 @@ fig = px.bar(
     daily_calories,
     x = 'date',
     y = 'calories',
-    title = '日別カロリー摂取量'
+    title = '日別カロリー摂取量',
 )
+
+#x軸をカテゴリ軸として扱う
+fig.update_xaxes(type='category')
+
 #グラフの表示
 st.plotly_chart(fig)
 
