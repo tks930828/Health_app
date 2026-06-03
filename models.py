@@ -8,6 +8,7 @@ class Meal(Base):
     id = Column(Integer,primary_key=True)
     date = Column(Date)
     meal_name = Column(String)
+    meal_type = Column(String) #朝食・昼食・夕食・間食
     calories = Column(Integer)
     protein = Column(Float)
     fat = Column(Float)

@@ -22,6 +22,9 @@ with tab1:
     #食事入力フォーム
     with st.form('eat_form'):
         meal_date = st.date_input("日付を入力してください")
+        meal_type = st.selectbox("食事区分を選択してください",
+                                 ["朝食","昼食","夕食","間食"]
+        )
         meal = st.text_input("食事名を入力してください")
         calories = st.number_input(
         "カロリー(kcal)を入力してください",
@@ -40,6 +43,7 @@ with tab1:
             new_meal = Meal(
                 date = meal_date,
                 meal_name = meal,
+                meal_type = meal_type,
                 calories = calories,
                 protein = protein,#単位
                 fat = fat,#単位
@@ -66,6 +70,7 @@ with tab1:
 
         meal_data.append({
             "date":meal.date,
+            "meal_type":meal.meal_type,
             "meal_name":meal.meal_name,
             "calories":meal.calories,
             "protein":meal.protein,
