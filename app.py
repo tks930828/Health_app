@@ -81,11 +81,17 @@ with tab1:
     df = pd.DataFrame(meal_data)
 
     #日別集計
-    daily_calories = (
-        df.groupby("date")["calories"] #日付でgroupby
-        .sum() #合計
-        .reset_index() #dataframe化
-    )
+
+    if not df.empty:#データが空でなければ
+
+        daily_calories = (
+            df.groupby("date")["calories"] #日付でgroupby
+            .sum() #合計
+            .reset_index() #dataframe化
+        )
+
+    else:#データが空であれば
+        st.info("食事データがありません")
 
     #pandas_dataframe（2次元データ）
     df_meals = pd.DataFrame(meal_data)
@@ -161,15 +167,22 @@ with tab3:
     st.plotly_chart(fig)
 
     #体重推移グラフ（折れ線グラフ）の作成
-    fig = px.line(
-        df_weights,
-        x = 'date',
-        y = 'weight',
-        title = '体重推移',
-        markers = True
-    )
-    #x軸をカテゴリ軸として扱う
-    fig.update_xaxes(type='category')
+    
+    if not df_weights.empty:
+    
+        fig = px.line(
+            df_weights,
+            x = 'date',
+            y = 'weight',
+            title = '体重推移',
+            markers = True
+        )
 
-    #グラフの表示
-    st.plotly_chart(fig)
+        #x軸をカテゴリ軸として扱う
+        fig.update_xaxes(type='category')
+
+        #グラフの表示
+        st.plotly_chart(fig)
+    
+    else:
+        st.info("体重データがありません")
