@@ -146,6 +146,25 @@ with tab2:
     #pandas_dataframe（2次元データ）
     df_weights = pd.DataFrame(weight_data)
 
+    st.subheader("食事記録の削除")
+
+    meal_ids = [meal.id for meal in meals]
+
+    selected_id = st.selectbox(
+        "削除するID",
+        meal_ids
+    )
+
+    if st.button("削除"):
+        meal = session.query(Meal).filter(
+            Meal.id == selected_id
+        ).first()
+
+        session.delete(meal)
+        session.commit()
+
+        st.success("削除しました")
+
     #streamlit表示
     st.dataframe(df_weights)
 
