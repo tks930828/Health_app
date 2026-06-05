@@ -99,6 +99,36 @@ with tab1:
     #streamlit表示
     st.dataframe(df_meals)
 
+    #食事記録の削除
+    st.subheader("削除")
+
+    # 食事データからID一覧を取得
+    meal_ids = [meal.id for meal in meals]
+
+    #削除するIDをプルダウンで表示
+    selected_id = st.selectbox(
+        "削除するID",
+        meal_ids
+    )
+
+    #削除ボタンが押された場合に削除を実行する
+    if st.button("削除"):
+        meal = session.query(Meal).filter(
+            Meal.id == selected_id
+        ).first()
+
+        #レコード削除
+        session.delete(meal)
+        #DBに反映
+        session.commit()
+
+        st.success("削除しました")
+        
+        st.rerun()
+    
+    else:
+        st.error("データが存在しません")
+
 with tab2:
     st.header("体重記録")
 
@@ -145,25 +175,6 @@ with tab2:
 
     #pandas_dataframe（2次元データ）
     df_weights = pd.DataFrame(weight_data)
-
-    st.subheader("食事記録の削除")
-
-    meal_ids = [meal.id for meal in meals]
-
-    selected_id = st.selectbox(
-        "削除するID",
-        meal_ids
-    )
-
-    if st.button("削除"):
-        meal = session.query(Meal).filter(
-            Meal.id == selected_id
-        ).first()
-
-        session.delete(meal)
-        session.commit()
-
-        st.success("削除しました")
 
     #streamlit表示
     st.dataframe(df_weights)
