@@ -169,6 +169,7 @@ with tab2:
     for weight in weights:
 
         weight_data.append({
+            "id":weight.id,
             "date":weight.date,
             "weight":weight.weight,
         })
@@ -178,6 +179,39 @@ with tab2:
 
     #streamlit表示
     st.dataframe(df_weights)
+
+    # 体重記録の削除
+st.subheader("削除")
+
+weight_ids = [weight.id for weight in weights]
+
+if weight_ids:
+
+    selected_id = st.selectbox(
+        "削除するID",
+        weight_ids
+    )
+
+    if st.button("削除"):
+
+        weight = session.query(Weightlog).filter(
+            Weightlog.id == selected_id
+        ).first()
+
+        if weight:
+
+            session.delete(weight)
+            session.commit()
+
+            st.success("削除しました")
+            st.rerun()
+
+        else:
+            st.error("データが存在しません")
+
+else:
+    st.info("削除できるデータがありません")
+
 
 with tab3:
     st.header("分析")
