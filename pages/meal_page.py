@@ -40,6 +40,7 @@ def meal_page(session):
 
             #insert実行準備
             session.add(new_meal)
+
             #SQL実行(insert)
             session.commit()
 
@@ -69,7 +70,6 @@ def meal_page(session):
     df = pd.DataFrame(meal_data)
 
     #日別集計
-
     if not df.empty:#データが空でなければ
 
         daily_calories = (
@@ -107,6 +107,7 @@ def meal_page(session):
 
         #レコード削除
         session.delete(meal)
+        
         #DBに反映
         session.commit()
 
