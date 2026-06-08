@@ -5,6 +5,15 @@ from models import Weightlog
 
 def weight_page(session):
 
+    #DBからweightのデータを全件取得（select * from weights)
+    weights = session.query(
+        Weightlog
+        ).all()
+    
+    weight_ids = [
+        weight.id for weight in weights
+        ]
+
     st.header("体重記録")
 
     #体重入力フォーム
@@ -34,9 +43,6 @@ def weight_page(session):
 
     st.header("体重記録一覧")
 
-    #DBからweightのデータを全件取得（select * from weights)
-    weights = session.query(Weightlog).all()
-
     #dataframe用のリスト取得
     weight_data = []
 
@@ -52,37 +58,36 @@ def weight_page(session):
     #pandas_dataframe（2次元データ）
     df_weights = pd.DataFrame(weight_data)
 
-    #streamlit表示
     st.dataframe(df_weights)
 
     # 体重記録の削除
-st.subheader("削除")
+    st.subheader("削除")
 
-weight_ids = [weight.id for weight in weights]
+    if weight_ids:
 
-if weight_ids:
+        selected_id = st.selectbox(
+            "削除するID",
+            weight_ids
+        )
 
-    selected_id = st.selectbox(
-        "削除するID",
-        weight_ids
-    )
+        if st.button("削除"):
 
-    if st.button("削除"):
+            weight = session.query(Weightlog).filter(
+                Weightlog.id == selected_id
+            ).first()
 
-        weight = session.query(Weightlog).filter(
-            Weightlog.id == selected_id
-        ).first()
+            if weight:
 
-        if weight:
+                session.delete(weight)
+                session.commit()
 
-            session.delete(weight)
-            session.commit()
+                st.success("削除しました")
+                st.rerun()
 
-            st.success("削除しました")
-            st.rerun()
+            else:
+                st.error("データが存在しません")
 
-        else:
-            st.error("データが存在しません")
+    else:
+        st.info("削除できるデータがありません")
 
-else:
-    st.info("削除できるデータがありません")
+    return df_weights
