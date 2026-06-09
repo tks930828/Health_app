@@ -116,4 +116,6 @@ def meal_page(session):
         st.rerun()
     
     else:
-        st.error("データが存在しません")
+        st.error("削除できるデータがありません")
+    
+    return df_meals
