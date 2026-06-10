@@ -11,6 +11,12 @@ def analysis_page(
     #食事推移グラフの作成
     if not df_meals.empty:
 
+        daily_calories = (
+        df_meals.groupby("date")["calories"]
+        .sum()
+        .reset_index()
+    )
+
         fig = px.bar(
             df_meals,
             x="date",
