@@ -93,33 +93,39 @@ def meal_page(session):
     # 食事データからID一覧を取得
     meal_ids = [meal.id for meal in meals]
 
-    #削除するIDをプルダウンで表示
-    selected_id = st.selectbox(
-        "削除するID",
-        meal_ids,
-        key = "meal_delete_id"
-    )
+    if meal_ids:
 
-    #削除ボタンが押された場合に削除を実行する
-    if st.button(
-        "削除",
-        key="meal_delete_button"
-    ):
-        meal = session.query(Meal).filter(
-            Meal.id == selected_id
-        ).first()
+     #削除するIDをプルダウンで表示
+        selected_id = st.selectbox(
+            "削除するID",
+            meal_ids,
+            key = "meal_delete_id"
+        )
 
-        #レコード削除
-        session.delete(meal)
+        #削除ボタンが押された場合に削除を実行する
+        if st.button(
+            "削除",
+            key="meal_delete_button"
+        ):
         
-        #DBに反映
-        session.commit()
+            meal = session.query(Meal).filter(
+                Meal.id == selected_id
+            ).first()
 
-        st.success("削除しました")
-        
-        st.rerun()
+        if meal:
+
+            #レコード削除
+            session.delete(meal)
+            #DBに反映
+            session.commit()
+
+            st.success("削除しました")
+            st.rerun()
+    
+        else:
+            st.error("データが存在しません")
     
     else:
-        st.error("削除できるデータがありません")
+         st.info("削除できるデータがありません")
     
     return df_meals
