@@ -101,7 +101,10 @@ def meal_page(session):
     )
 
     #削除ボタンが押された場合に削除を実行する
-    if st.button("削除"):
+    if st.button(
+        "削除",
+        key="meal_delete_button"
+    ):
         meal = session.query(Meal).filter(
             Meal.id == selected_id
         ).first()

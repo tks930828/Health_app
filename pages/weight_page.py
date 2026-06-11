@@ -71,7 +71,10 @@ def weight_page(session):
             key = "weight_delete_id"
         )
 
-        if st.button("削除"):
+        if st.button(
+            "削除",
+            key="weight_delete_button"
+        ):
 
             weight = session.query(Weightlog).filter(
                 Weightlog.id == selected_id
