@@ -96,7 +96,8 @@ def meal_page(session):
     #削除するIDをプルダウンで表示
     selected_id = st.selectbox(
         "削除するID",
-        meal_ids
+        meal_ids,
+        key = "meal_delete_id"
     )
 
     #削除ボタンが押された場合に削除を実行する

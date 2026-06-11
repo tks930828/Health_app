@@ -67,7 +67,8 @@ def weight_page(session):
 
         selected_id = st.selectbox(
             "削除するID",
-            weight_ids
+            weight_ids,
+            key = "weight_delete_id"
         )
 
         if st.button("削除"):
