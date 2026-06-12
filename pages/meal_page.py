@@ -87,6 +87,87 @@ def meal_page(session):
     #streamlit表示
     st.dataframe(df_meals)
 
+    # 食事データからID一覧を取得
+    meal_ids = [meal.id for meal in meals]
+
+    if meal_ids:
+
+        #編集するIDを選択
+        selected_id = st.selectbox(
+            "編集する食事",
+            meal_ids,
+            key = "meal_update_id"
+        )
+
+        #DBから対象データを取得
+        meal = session.query(Meal).filter(
+                    Meal.id == selected_id
+                ).first()
+        
+        if meal:
+
+            new_date = st.date_input(
+                "日付",
+                value=meal.date
+            )
+
+            new_meal_type = st.selectbox(
+                "食事区分",
+                ["朝食", "昼食", "夕食", "間食"],
+                index=["朝食", "昼食", "夕食", "間食"].index(meal.meal_type)
+            )
+
+            new_meal_name = st.text_input(
+                "食事名",
+                value=meal.meal_name
+            )
+
+            new_calories = st.number_input(
+                "カロリー",
+                value=int(meal.calories)
+            )
+            
+            new_protein = st.number_input(
+                "プロテイン(g)",
+                value=int(meal.protein)
+            )
+
+            new_fat = st.number_input(
+                "脂肪(g)",
+                value=int(meal.fat)
+            )
+
+            new_carb = st.number_input(
+                "炭水化物",
+                value=int(meal.carb)
+            )
+
+        else:
+            st.error("対象データが見つかりません")
+
+        #更新ボタン
+        if st.button(
+            "更新",
+            key = "meal_update_button"
+        ):
+        
+            #値を更新
+            meal.date = new_date
+            meal.meal_type = new_meal_type
+            meal.meal_name = new_meal_name
+            meal.calories = new_calories
+            meal.protein = new_protein
+            meal.fat = new_fat
+            meal.carb = new_fat
+
+            #commit
+            session.commit()
+            st.success("更新しました")
+            st.rerun()
+
+    else:
+        st.info("編集できるデータがありません")
+
     #食事記録の削除
     st.subheader("削除")
 
@@ -95,7 +176,7 @@ def meal_page(session):
 
     if meal_ids:
 
-     #削除するIDをプルダウンで表示
+     #削除するIDを選択
         selected_id = st.selectbox(
             "削除するID",
             meal_ids,
