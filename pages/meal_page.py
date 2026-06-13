@@ -40,10 +40,8 @@ def meal_page(session):
 
             #insert実行準備
             session.add(new_meal)
-
             #SQL実行(insert)
             session.commit()
-
             st.success("食事を登録しました")
 
     st.header("食事記録一覧")
@@ -129,17 +127,17 @@ def meal_page(session):
             
             new_protein = st.number_input(
                 "プロテイン(g)",
-                value=int(meal.protein)
+                value=float(meal.protein)
             )
 
             new_fat = st.number_input(
                 "脂肪(g)",
-                value=int(meal.fat)
+                value=float(meal.fat)
             )
 
             new_carb = st.number_input(
                 "炭水化物",
-                value=int(meal.carb)
+                value=float(meal.carb)
             )
 
         else:
@@ -158,7 +156,7 @@ def meal_page(session):
             meal.calories = new_calories
             meal.protein = new_protein
             meal.fat = new_fat
-            meal.carb = new_fat
+            meal.carb = new_carb
 
             #commit
             session.commit()
@@ -193,19 +191,19 @@ def meal_page(session):
                 Meal.id == selected_id
             ).first()
 
-        if meal:
+            if meal:
 
-            #レコード削除
-            session.delete(meal)
-            #DBに反映
-            session.commit()
+                #レコード削除
+                session.delete(meal)
+                #DBに反映
+                session.commit()
 
-            st.success("削除しました")
-            st.rerun()
-    
-        else:
-            st.error("データが存在しません")
-    
+                st.success("削除しました")
+                st.rerun()
+        
+            else:
+                st.error("データが存在しません")
+        
     else:
          st.info("削除できるデータがありません")
     
