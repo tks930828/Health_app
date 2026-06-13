@@ -56,6 +56,7 @@ def meal_page(session):
     for meal in meals:
 
         meal_data.append({
+            "id":meal.id,
             "date":meal.date,
             "meal_type":meal.meal_type,
             "meal_name":meal.meal_name,
