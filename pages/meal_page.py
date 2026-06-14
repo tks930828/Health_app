@@ -48,7 +48,7 @@ def meal_page(session):
 
     #DBからmealのデータを全件取得（select * from meals)
     meals = session.query(Meal).all()
-
+    
     #dataframe用のリスト取得
     meal_data = []
 
@@ -95,11 +95,19 @@ def meal_page(session):
 
         if meal_ids:
 
-            #編集するIDを選択
+            #抽出したIDの情報を変換（日付｜区分｜名前）
+            meal_options = {
+            meal.id:
+            f"{meal.date} | {meal.meal_type} | {meal.meal_name}"
+            for meal in meals
+            }
+
+            #編集する食事を選択
             selected_id = st.selectbox(
-                "編集する食事",
-                meal_ids,
-                key = "meal_update_id"
+            "編集する食事データ",
+            options=list(meal_options.keys()),
+            format_func=lambda x: meal_options[x],
+            key="meal_update_id"
             )
 
             #DBから対象データを取得
@@ -153,7 +161,6 @@ def meal_page(session):
                 "更新",
                 key = "meal_update_button"
             ):
-            
                 #値を更新
                 meal.date = new_date
                 meal.meal_type = new_meal_type
@@ -179,12 +186,20 @@ def meal_page(session):
         meal_ids = [meal.id for meal in meals]
 
         if meal_ids:
+            
+            #抽出したIDの情報を変換（日付｜区分｜名前）
+            meal_options = {
+            meal.id:
+            f"{meal.date} | {meal.meal_type} | {meal.meal_name}"
+            for meal in meals
+            }
 
-        #削除するIDを選択
+            #削除する食事を選択
             selected_id = st.selectbox(
-                "削除するID",
-                meal_ids,
-                key = "meal_delete_id"
+            "削除する食事データ",
+            options=list(meal_options.keys()),
+            format_func=lambda x: meal_options[x],
+            key="meal_delete_id"
             )
 
             #削除ボタンが押された場合に削除を実行する
