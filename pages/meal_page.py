@@ -86,7 +86,7 @@ def meal_page(session):
 
     #食事記録編集の折り畳み
     with st.expander("食事記録編集"):
-        #食事記録の削除
+
         st.subheader("編集")
 
         # 食事データからID一覧を取得

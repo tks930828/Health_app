@@ -50,7 +50,6 @@ def weight_page(session):
     for weight in weights:
 
         weight_data.append({
-            "id":weight.id,
             "date":weight.date,
             "weight":weight.weight,
         })
@@ -60,38 +59,117 @@ def weight_page(session):
 
     st.dataframe(df_weights)
 
-    # 体重記録の削除
-    st.subheader("削除")
+    #体重記録編集の折り畳み
+    with st.expander("体重記録編集"):
 
-    if weight_ids:
+        st.subheader("編集")
 
-        selected_id = st.selectbox(
-            "削除するID",
-            weight_ids,
-            key = "weight_delete_id"
-        )
+        # 食事データからID一覧を取得
+        weight_ids = [weight.id for weight in weights]
 
-        if st.button(
-            "削除",
-            key="weight_delete_button"
-        ):
+        if weight_ids:
 
+            #抽出したIDの情報を変換（日付｜区分｜名前）
+            weight_options = {
+                weight.id:
+                f"{weight.date} | {weight.weight}"
+                for weight in weights
+            }
+
+            #編集する体重を選択
+            selected_id = st.selectbox(
+            "編集する体重データ",
+            options=list(weight_options.keys()),
+            format_func=lambda x: weight_options[x],
+            key="weight_update_id"
+            )
+
+            #DBから対象データを取得
             weight = session.query(Weightlog).filter(
-                Weightlog.id == selected_id
-            ).first()
-
+                        weight.id == selected_id
+                    ).first()
+            
             if weight:
 
-                session.delete(weight)
-                session.commit()
+                new_date = st.date_input(
+                    "日付",
+                    value=weight.date,
+                    key="weight_update_date"
+                )
 
-                st.success("削除しました")
-                st.rerun()
+                new_weight = st.number_input(
+                    "体重(kg)",
+                    value=float(weight.weight),
+                    key="weight_update_weight"
+                )
 
             else:
-                st.error("データが存在しません")
+                st.error("対象データが見つかりません")
 
-    else:
-        st.info("削除できるデータがありません")
+            #更新ボタン
+            if st.button(
+                "更新",
+                key = "weight_update_button"
+            ):
+                #値を更新
+                weight.date = new_date
+                weight.weight = new_weight
 
-    return df_weights
+                #commit
+                session.commit()
+                st.success("更新しました")
+                st.rerun()
+        else:
+            st.info("編集できるデータがありません")
+
+    with st.expander("体重記録削除"):
+        #体重記録の削除
+        st.subheader("削除")
+
+        # 食事データからID一覧を取得
+        weight_ids = [weight.id for weight in weights]
+
+        if weight_ids:
+            
+            #抽出したIDの情報を変換（日付｜区分｜名前）
+            weight_options = {
+            weight.id:
+            f"{weight.date} | {weight.weight}"
+            for weight in weights
+            }
+
+            #削除する食事を選択
+            selected_id = st.selectbox(
+            "削除する体重データ",
+            options=list(weight_options.keys()),
+            format_func=lambda x: weight_options[x],
+            key="weight_delete_id"
+            )
+
+            #削除ボタンが押された場合に削除を実行する
+            if st.button(
+                "削除",
+                key="wieght_delete_button"
+            ):
+            
+                weight = session.query(Weightlog).filter(
+                    weight.id == selected_id
+                ).first()
+
+                if weight:
+
+                    #レコード削除
+                    session.delete(weight)
+                    #DBに反映
+                    session.commit()
+
+                    st.success("削除しました")
+                    st.rerun()
+            
+                else:
+                    st.error("データが存在しません")
+            
+        else:
+            st.info("削除できるデータがありません")
+        
+        return df_weights
