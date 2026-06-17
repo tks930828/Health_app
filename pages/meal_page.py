@@ -118,7 +118,8 @@ def meal_page(session):
 
                 new_date = st.date_input(
                     "日付",
-                    value=meal.date
+                    value=meal.date,
+                    key="meal_update_date"
                 )
 
                 new_meal_type = st.selectbox(
@@ -129,27 +130,32 @@ def meal_page(session):
 
                 new_meal_name = st.text_input(
                     "食事名",
-                    value=meal.meal_name
+                    value=meal.meal_name,
+                    key="meal_update_name"
                 )
 
                 new_calories = st.number_input(
                     "カロリー",
-                    value=int(meal.calories)
+                    value=int(meal.calories),
+                    key="meal_update_calories"
                 )
                 
                 new_protein = st.number_input(
                     "プロテイン(g)",
-                    value=float(meal.protein)
+                    value=float(meal.protein),
+                    key="meal_update_protein"
                 )
 
                 new_fat = st.number_input(
                     "脂肪(g)",
-                    value=float(meal.fat)
+                    value=float(meal.fat),
+                    key="meal_update_fat"
                 )
 
                 new_carb = st.number_input(
                     "炭水化物",
-                    value=float(meal.carb)
+                    value=float(meal.carb),
+                    key="meal_update_carb"
                 )
 
             else:
