@@ -5,6 +5,34 @@ def analysis_page(
         df_meals,
         df_weights
 ):
+    # 総摂取カロリー
+    total_calories = df_meals["calories"].sum()
+    # 平均体重
+    average_weight = df_weights["weight"].mean()
+    # 記録日数
+    record_days = len(df_weights)
+
+    st.subheader("健康サマリー")
+
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        st.metric(
+            "総摂取カロリー",
+            f"{total_calories:.0f} kcal"
+        )
+
+    with col2:
+        st.metric(
+            "平均体重",
+            f"{average_weight:.1f} kg"
+        )
+
+    with col3:
+        st.metric(
+            "記録日数",
+            f"{record_days} 日"
+        )
 
     st.header("分析")
 
@@ -52,3 +80,4 @@ def analysis_page(
     
     else:
         st.info("体重データがありません")
+
