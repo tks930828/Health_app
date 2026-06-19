@@ -69,6 +69,25 @@ def analysis_page(
     else:
         st.info("食事データがありません")
 
+    # 食事区分別カロリー推移
+    meal_type_calories = (
+        df_meals.groupby("meal_type")["calories"]
+        .sum()
+        .reset_index()
+    )
+
+    fig  = px.bar(
+        meal_type_calories,
+        x="meal_type",
+        y="calories",
+        title="食事区分別カロリー"
+    )
+
+    st.plotly_chart(
+        fig,
+        use_container_width=True
+    )
+
     #食事推移グラフの作成
     if not df_meals.empty:
 
