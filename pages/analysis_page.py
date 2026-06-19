@@ -1,9 +1,10 @@
+import pandas as pd
 import streamlit as st
 import plotly.express as px
 
 def analysis_page(
         df_meals,
-        df_weights
+        df_weights,
 ):
     # 総摂取カロリー
     total_calories = df_meals["calories"].sum()
@@ -11,6 +12,12 @@ def analysis_page(
     average_weight = df_weights["weight"].mean()
     # 記録日数
     record_days = len(df_weights)
+    # プロテイン
+    total_protein = df_meals["protein"].sum()
+    # 脂質
+    total_fat = df_meals["fat"].sum()
+    # 炭水化物
+    total_carb = df_meals["carb"].sum()
 
     st.subheader("健康サマリー")
 
@@ -35,6 +42,32 @@ def analysis_page(
         )
 
     st.header("分析")
+    #円グラフの作成
+    if not df_meals.empty:
+        
+        df_pfc = pd.DataFrame({
+            "nutrient":["protein","fat","carb"],
+            "amount":[
+                total_protein,
+                total_fat,
+                total_carb
+            ]
+        })
+
+        fig = px.pie(
+            df_pfc,
+            names="nutrient",
+            values="amount",
+            title="栄養素バランス"
+        )
+
+        st.plotly_chart(
+            fig,
+            use_container_width=True
+        )
+
+    else:
+        st.info("食事データがありません")
 
     #食事推移グラフの作成
     if not df_meals.empty:
