@@ -88,6 +88,31 @@ def analysis_page(
         use_container_width=True
     )
 
+    #月別カロリー推移
+    df_meals["month"] = pd.to_datetime(
+        df_meals["date"]
+    ).dt.strftime("%Y-%m")
+    
+    #月別集計
+    monthly_calories = (
+        df_meals.groupby("month")["calories"]
+        .sum()
+        .reset_index()
+    )
+    
+    fig = px.line(
+        monthly_calories,
+        x="month",
+        y="calories",
+        title="月別カロリー推移",
+        markers=True
+    )
+
+    st.plotly_chart(
+        fig,
+        use_container_width=True
+    )
+
     #食事推移グラフの作成
     if not df_meals.empty:
 
