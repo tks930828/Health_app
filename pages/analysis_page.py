@@ -41,6 +41,20 @@ def analysis_page(
             f"{record_days} 日"
         )
 
+    #体重変化KPI
+    #体重の前後の数値を取得
+    start_weight = df_weights.iloc[0]["weight"]
+    end_weight = df_weights.iloc[-1]["weight"]
+    weight_change = (
+        end_weight - start_weight
+    )
+
+    st.metric(
+        "体重変化",
+        f"{end_weight:.1f} kg",
+        delta=f"{weight_change:.1f} kg"
+    )
+
     st.header("分析")
 
     #円グラフの作成
