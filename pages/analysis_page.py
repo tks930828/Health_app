@@ -42,6 +42,7 @@ def analysis_page(
         )
 
     st.header("分析")
+
     #円グラフの作成
     if not df_meals.empty:
         
@@ -157,4 +158,25 @@ def analysis_page(
     
     else:
         st.info("体重データがありません")
+    
+    #カロリーと体重の関係分析
+    #体重とカロリーを日付で結合
+    merged_df = pd.merge(
+        daily_calories,
+        df_weights,
+        on="date",
+        how="inner"
+    )
 
+    #散布図
+    fig = px.scatter(
+        merged_df,
+        x="calories",
+        y="weight",
+        title="摂取カロリーと体重"
+    )
+
+    st.plotly_chart(
+        fig,
+        use_container_width=True
+    )
