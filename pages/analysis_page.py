@@ -56,6 +56,9 @@ def analysis_page(
     )
 
     st.header("分析")
+    tab1, tab2, tab3 = st.tabs(
+        ["サマリー", "食事分析", "体重分析"]
+    )
 
     #円グラフの作成
     if not df_meals.empty:
