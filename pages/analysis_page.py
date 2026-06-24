@@ -21,179 +21,199 @@ def analysis_page(
 
     st.subheader("健康サマリー")
 
-    col1, col2, col3 = st.columns(3)
+    col1, col2, col3, col4 = st.columns(4)
 
     with col1:
         st.metric(
             "総摂取カロリー",
             f"{total_calories:.0f} kcal"
         )
-
     with col2:
         st.metric(
             "平均体重",
             f"{average_weight:.1f} kg"
         )
-
     with col3:
         st.metric(
             "記録日数",
             f"{record_days} 日"
         )
-
-    #体重変化KPI
-    #体重の前後の数値を取得
-    start_weight = df_weights.iloc[0]["weight"]
-    end_weight = df_weights.iloc[-1]["weight"]
-    weight_change = (
-        end_weight - start_weight
-    )
-
-    st.metric(
-        "体重変化",
-        f"{end_weight:.1f} kg",
-        delta=f"{weight_change:.1f} kg"
-    )
+    with col4:
+        st.metric(
+            "体重変化",
+            f"{end_weight:.1f} kg",
+            delta=f"{weight_change:.1f} kg"
+        )
 
     st.header("分析")
     tab1, tab2, tab3 = st.tabs(
         ["サマリー", "食事分析", "体重分析"]
     )
 
-    #円グラフの作成
-    if not df_meals.empty:
+    with tab1:
+
+        col1, col2 = st.columns(2)
+
+        #体重変化KPI
+        start_weight = df_weights.iloc[0]["weight"]
+        end_weight = df_weights.iloc[-1]["weight"]
+        weight_change = (
+            end_weight - start_weight
+        )
+
+        st.metric(
+            "体重変化",
+            f"{end_weight:.1f} kg",
+            delta=f"{weight_change:.1f} kg"
+        )
+
+         #円グラフの作成
+        if not df_meals.empty:
         
-        df_pfc = pd.DataFrame({
-            "nutrient":["protein","fat","carb"],
-            "amount":[
-                total_protein,
-                total_fat,
-                total_carb
-            ]
-        })
+            df_pfc = pd.DataFrame({
+                "nutrient":["protein","fat","carb"],
+                "amount":[
+                    total_protein,
+                    total_fat,
+                    total_carb
+                ]
+            })
 
-        fig = px.pie(
-            df_pfc,
-            names="nutrient",
-            values="amount",
-            title="栄養素バランス"
-        )
+            fig = px.pie(
+                df_pfc,
+                names="nutrient",
+                values="amount",
+                title="栄養素バランス"
+            )
 
-        st.plotly_chart(
-            fig,
-            use_container_width=True
-        )
+            st.plotly_chart(
+                fig,
+                use_container_width=True
+            )
 
-    else:
-        st.info("食事データがありません")
+        else:
+            st.info("食事データがありません")
+   
+    with tab2:
 
-    # 食事区分別カロリー推移
-    meal_type_calories = (
-        df_meals.groupby("meal_type")["calories"]
-        .sum()
-        .reset_index()
-    )
+        col1, col2 = st.columns(2)
 
-    fig  = px.bar(
-        meal_type_calories,
-        x="meal_type",
-        y="calories",
-        title="食事区分別カロリー"
-    )
+        with col1:
 
-    st.plotly_chart(
-        fig,
-        use_container_width=True
-    )
+            # 食事区分別カロリー推移
+            meal_type_calories = (
+                df_meals.groupby("meal_type")["calories"]
+                .sum()
+                .reset_index()
+            )
 
-    #月別カロリー推移
-    df_meals["month"] = pd.to_datetime(
-        df_meals["date"]
-    ).dt.strftime("%Y-%m")
+            fig  = px.bar(
+                meal_type_calories,
+                x="meal_type",
+                y="calories",
+                title="食事区分別カロリー"
+            )
+
+            st.plotly_chart(
+                fig,
+                use_container_width=True
+            )
+        
+        with col2:
+            
+            #月別カロリー推移
+            df_meals["month"] = pd.to_datetime(
+                df_meals["date"]
+            ).dt.strftime("%Y-%m")
+            
+            #月別集計
+            monthly_calories = (
+                df_meals.groupby("month")["calories"]
+                .sum()
+                .reset_index()
+            )
+            
+            fig = px.line(
+                monthly_calories,
+                x="month",
+                y="calories",
+                title="月別カロリー推移",
+                markers=True
+            )
+
+            st.plotly_chart(
+                fig,
+                use_container_width=True
+            )
+
+        #食事推移グラフの作成
+        if not df_meals.empty:
+
+            daily_calories = (
+            df_meals.groupby("date")["calories"]
+            .sum()
+            .reset_index()
+            )
+
+            fig = px.bar(
+                df_meals,
+                x="date",
+                y="calories",
+                title="日別カロリー摂取量"
+            )
+
+            fig.update_xaxes(type="category")
+
+            #グラフの表示
+            st.plotly_chart(fig)
+
+        else:
+            st.info("食事データがありません")
+
+    with tab3:
+
+        col1, col2 = st.columns(2)
+
+        with col1:
+
+            #体重推移グラフ（折れ線グラフ）の作成
+            if not df_weights.empty:
     
-    #月別集計
-    monthly_calories = (
-        df_meals.groupby("month")["calories"]
-        .sum()
-        .reset_index()
-    )
+                fig = px.line(
+                    df_weights,
+                    x = 'date',
+                    y = 'weight',
+                    title = '体重推移',
+                    markers = True
+                )
+
+                #x軸をカテゴリ軸として扱う
+                fig.update_xaxes(type='category')
+
+                #グラフの表示
+                st.plotly_chart(fig)
+            else:
+                st.info("体重データがありません")
     
-    fig = px.line(
-        monthly_calories,
-        x="month",
-        y="calories",
-        title="月別カロリー推移",
-        markers=True
-    )
-
-    st.plotly_chart(
-        fig,
-        use_container_width=True
-    )
-
-    #食事推移グラフの作成
-    if not df_meals.empty:
-
-        daily_calories = (
-        df_meals.groupby("date")["calories"]
-        .sum()
-        .reset_index()
-    )
-
-        fig = px.bar(
-            df_meals,
-            x="date",
-            y="calories",
-            title="日別カロリー摂取量"
-        )
-
-        fig.update_xaxes(type="category")
-
-        #グラフの表示
-        st.plotly_chart(fig)
-
-    else:
-        st.info("食事データがありません")
-
-
-    #体重推移グラフ（折れ線グラフ）の作成
-    if not df_weights.empty:
-    
-        fig = px.line(
+        with col2:
+            #カロリーと体重の関係分析
+            #体重とカロリーを日付で結合
+            merged_df = pd.merge(
+            daily_calories,
             df_weights,
-            x = 'date',
-            y = 'weight',
-            title = '体重推移',
-            markers = True
-        )
+            on="date",
+            how="inner"
+            )
 
-        #x軸をカテゴリ軸として扱う
-        fig.update_xaxes(type='category')
+            #散布図
+            fig = px.scatter(
+                merged_df,
+                x="calories",
+                y="weight",
+                title="摂取カロリーと体重"
+            )
 
-        #グラフの表示
-        st.plotly_chart(fig)
-    
-    else:
-        st.info("体重データがありません")
-    
-    #カロリーと体重の関係分析
-    #体重とカロリーを日付で結合
-    merged_df = pd.merge(
-        daily_calories,
-        df_weights,
-        on="date",
-        how="inner"
-    )
-
-    #散布図
-    fig = px.scatter(
-        merged_df,
-        x="calories",
-        y="weight",
-        title="摂取カロリーと体重"
-    )
-
-    st.plotly_chart(
-        fig,
-        use_container_width=True
-    )
+            st.plotly_chart(
+                fig,
+                use_container_width=True
+            )
