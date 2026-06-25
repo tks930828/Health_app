@@ -54,45 +54,60 @@ def analysis_page(
 
         col1, col2 = st.columns(2)
 
-        #体重変化KPI
-        start_weight = df_weights.iloc[0]["weight"]
-        end_weight = df_weights.iloc[-1]["weight"]
-        weight_change = (
-            end_weight - start_weight
-        )
+        with col1:
+            #円グラフの作成
+            if not df_meals.empty:
 
-        st.metric(
-            "体重変化",
-            f"{end_weight:.1f} kg",
-            delta=f"{weight_change:.1f} kg"
-        )
+                #体重変化KPI
+                start_weight = df_weights.iloc[0]["weight"]
+                end_weight = df_weights.iloc[-1]["weight"]
+                weight_change = (
+                    end_weight - start_weight
+                )
 
-         #円グラフの作成
-        if not df_meals.empty:
+                st.metric(
+                    "体重変化",
+                    f"{end_weight:.1f} kg",
+                    delta=f"{weight_change:.1f} kg"
+                )
+
+                df_pfc = pd.DataFrame({
+                    "nutrient":["protein","fat","carb"],
+                    "amount":[
+                        total_protein,
+                        total_fat,
+                        total_carb
+                    ]
+                })
+
+                fig = px.pie(
+                    df_pfc,
+                    names="nutrient",
+                    values="amount",
+                    title="栄養素バランス"
+                )
+
+                st.plotly_chart(
+                    fig,
+                    use_container_width=True
+                )
+
+            else:
+                st.info("食事データがありません")
         
-            df_pfc = pd.DataFrame({
-                "nutrient":["protein","fat","carb"],
-                "amount":[
-                    total_protein,
-                    total_fat,
-                    total_carb
-                ]
-            })
+        with col2:
 
-            fig = px.pie(
-                df_pfc,
-                names="nutrient",
-                values="amount",
-                title="栄養素バランス"
+            st.write("PFC集計")
+
+            st.write(
+                f"""
+                Protein : {total_protein:.1f} g
+
+                Fat : {total_fat:.1f} g
+
+                Carb : {total_carb:.1f} g
+                """
             )
-
-            st.plotly_chart(
-                fig,
-                use_container_width=True
-            )
-
-        else:
-            st.info("食事データがありません")
    
     with tab2:
 
@@ -122,8 +137,10 @@ def analysis_page(
         with col2:
             
             #月別カロリー推移
-            df_meals["month"] = pd.to_datetime(
-                df_meals["date"]
+            df_month = df_meals.copy()
+
+            df_month["month"] = pd.to_datetime(
+            df_month["date"]
             ).dt.strftime("%Y-%m")
             
             #月別集計
@@ -155,8 +172,10 @@ def analysis_page(
             .reset_index()
             )
 
+            daily_calories = pd.DataFrame()
+
             fig = px.bar(
-                df_meals,
+                daily_calories,
                 x="date",
                 y="calories",
                 title="日別カロリー摂取量"
