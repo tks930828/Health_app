@@ -19,6 +19,16 @@ def analysis_page(
     # 炭水化物
     total_carb = df_meals["carb"].sum()
 
+     # 体重変化
+    end_weight = None
+    weight_change = None
+
+    #体重変化KPI
+    if not df_weights.empty:
+        start_weight = df_weights["weight"].iloc[0]
+        end_weight = df_weights["weight"].iloc[-1]
+        weight_change = end_weight - start_weight
+
     st.subheader("健康サマリー")
 
     col1, col2, col3, col4 = st.columns(4)
@@ -41,10 +51,12 @@ def analysis_page(
     with col4:
         st.metric(
             "体重変化",
-            f"{end_weight:.1f} kg",
-            delta=f"{weight_change:.1f} kg"
+            f"{end_weight:.1f} kg"
+            if end_weight is not None else "-",
+            delta=f"{weight_change:+.1f} kg"
+            if weight_change is not None else "-"
         )
-
+        
     st.header("分析")
     tab1, tab2, tab3 = st.tabs(
         ["サマリー", "食事分析", "体重分析"]
@@ -57,13 +69,6 @@ def analysis_page(
         with col1:
             #円グラフの作成
             if not df_meals.empty:
-
-                #体重変化KPI
-                start_weight = df_weights.iloc[0]["weight"]
-                end_weight = df_weights.iloc[-1]["weight"]
-                weight_change = (
-                    end_weight - start_weight
-                )
 
                 st.metric(
                     "体重変化",
