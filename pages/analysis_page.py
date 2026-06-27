@@ -142,18 +142,21 @@ def analysis_page(
         with col2:
             
             #月別カロリー推移
-            df_month = df_meals.copy()
+            if not df_meals.empty:
 
-            df_month["month"] = pd.to_datetime(
-            df_month["date"]
-            ).dt.strftime("%Y-%m")
-            
-            #月別集計
-            monthly_calories = (
-                df_meals.groupby("month")["calories"]
+                df_month = df_meals.copy()
+
+                df_month["month"] = (
+                pd.to_datetime(df_month["date"])
+                .dt.strftime("%Y-%m")
+                )
+
+                monthly_calories = (
+                df_month
+                .groupby("month")["calories"]
                 .sum()
                 .reset_index()
-            )
+    )
             
             fig = px.line(
                 monthly_calories,
