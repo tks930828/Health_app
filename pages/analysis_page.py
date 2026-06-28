@@ -94,7 +94,7 @@ def analysis_page(
 
                 st.plotly_chart(
                     fig,
-                    use_container_width=True
+                    width="stretch"
                 )
 
             else:
@@ -136,7 +136,7 @@ def analysis_page(
 
             st.plotly_chart(
                 fig,
-                use_container_width=True
+                width="stretch"
             )
         
         with col2:
@@ -156,20 +156,20 @@ def analysis_page(
                 .groupby("month")["calories"]
                 .sum()
                 .reset_index()
-    )
+                )
             
-            fig = px.line(
-                monthly_calories,
-                x="month",
-                y="calories",
-                title="月別カロリー推移",
-                markers=True
-            )
+                fig = px.line(
+                    monthly_calories,
+                    x="month",
+                    y="calories",
+                    title="月別カロリー推移",
+                    markers=True
+                )
 
-            st.plotly_chart(
-                fig,
-                use_container_width=True
-            )
+                st.plotly_chart(
+                    fig,
+                    width="stretch"
+                )
 
         #食事推移グラフの作成
         if not df_meals.empty:
@@ -242,5 +242,5 @@ def analysis_page(
 
             st.plotly_chart(
                 fig,
-                use_container_width=True
+                width="stretch"
             )
