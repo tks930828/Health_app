@@ -180,8 +180,6 @@ def analysis_page(
             .reset_index()
             )
 
-            daily_calories = pd.DataFrame()
-
             fig = px.bar(
                 daily_calories,
                 x="date",
