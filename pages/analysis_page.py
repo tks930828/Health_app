@@ -2,38 +2,78 @@ import pandas as pd
 import streamlit as st
 import plotly.express as px
 
+# 総摂取カロリー
+total_calories = df_meals["calories"].sum()
+# 平均体重
+average_weight = df_weights["weight"].mean()
+# 記録日数
+record_days = len(df_weights)
+# プロテイン
+total_protein = df_meals["protein"].sum()
+# 脂質
+total_fat = df_meals["fat"].sum()
+# 炭水化物
+total_carb = df_meals["carb"].sum()
+
+# 体重変化
+end_weight = None
+weight_change = None
+
+def create_kpi(
+        df_meals,
+        df_weights,
+    ):
+        
+    #体重変化KPI
+    if not df_weights.empty:
+        start_weight = df_weights["weight"].iloc[0]
+        end_weight = df_weights["weight"].iloc[-1]
+        weight_change = end_weight - start_weight
+
+def create_pfc_chart(
+        df_meals,
+        ):
+
+        st.write("PFC集計")
+
+            st.write(
+                f"""
+                Protein : {total_protein:.1f} g
+                Fat : {total_fat:.1f} g
+                Carb : {total_carb:.1f} g
+                    """
+                )
+
+def create_meal_type_chart(
+            df_meals,
+            ):
+
+            # 食事区分別カロリー推移
+            meal_type_calories = (
+            df_meals.groupby("meal_type")["calories"]
+            .sum()
+            .reset_index()
+            )
+
+            fig  = px.bar(
+                meal_type_calories,
+                x="meal_type",
+                y="calories",
+                title="食事区分別カロリー"
+            )
+
+            st.plotly_chart(
+                fig,
+                width="stretch"
+            )
+
+
+
 def analysis_page(
         df_meals,
         df_weights,
 ):
-    # 総摂取カロリー
-    total_calories = df_meals["calories"].sum()
-    # 平均体重
-    average_weight = df_weights["weight"].mean()
-    # 記録日数
-    record_days = len(df_weights)
-    # プロテイン
-    total_protein = df_meals["protein"].sum()
-    # 脂質
-    total_fat = df_meals["fat"].sum()
-    # 炭水化物
-    total_carb = df_meals["carb"].sum()
-
-     # 体重変化
-    end_weight = None
-    weight_change = None
-
-    def create_kpi(
-        df_meals,
-        df_weights,
-    ):
-
-        #体重変化KPI
-        if not df_weights.empty:
-            start_weight = df_weights["weight"].iloc[0]
-            end_weight = df_weights["weight"].iloc[-1]
-            weight_change = end_weight - start_weight
-
+    
     st.subheader("健康サマリー")
 
     col1, col2, col3, col4 = st.columns(4)
@@ -107,50 +147,13 @@ def analysis_page(
         
         with col2:
             
-            def create_pfc_chart(
-            df_meals,
-            ):
-
-                st.write("PFC集計")
-
-                st.write(
-                    f"""
-                    Protein : {total_protein:.1f} g
-
-                    Fat : {total_fat:.1f} g
-
-                    Carb : {total_carb:.1f} g
-                    """
-                )
+            
    
     with tab2:
 
         col1, col2 = st.columns(2)
 
         with col1:
-
-            def create_meal_type_chart(
-            df_meals,
-            ):
-
-                # 食事区分別カロリー推移
-                meal_type_calories = (
-                    df_meals.groupby("meal_type")["calories"]
-                    .sum()
-                    .reset_index()
-                )
-
-                fig  = px.bar(
-                    meal_type_calories,
-                    x="meal_type",
-                    y="calories",
-                    title="食事区分別カロリー"
-                )
-
-                st.plotly_chart(
-                    fig,
-                    width="stretch"
-                )
         
         with col2:
 
@@ -279,3 +282,65 @@ def analysis_page(
                     fig,
                     width="stretch"
                 )
+
+#関数分割
+# def analysis_page(
+#         df_meals,
+#         df_weights,
+# ):
+
+#     tab1, tab2, tab3 = st.tabs(
+#         ["サマリー", "食事分析", "体重分析"]
+#     )
+
+#     with tab1:
+#         create_kpi(
+#             df_meals,
+#             df_weights
+#         )
+
+#         col1, col2 = st.columns(2)
+
+#         with col1:
+#             create_pfc_chart(
+#                 df_meals
+#             )
+
+#         with col2:
+#             create_pfc_summary(
+#                 df_meals
+#             )
+
+#     with tab2:
+
+#         col1, col2 = st.columns(2)
+
+#         with col1:
+#             create_meal_type_chart(
+#                 df_meals
+#             )
+
+#         with col2:
+#             create_monthly_chart(
+#                 df_meals
+#             )
+
+#         create_daily_chart(
+#             df_meals
+#         )
+
+#     with tab3:
+
+#         col1, col2 = st.columns(2)
+
+#         with col1:
+#             create_weight_chart(
+#                 df_weights
+#             )
+
+#         with col2:
+#             create_scatter_chart(
+#                 df_meals,
+#                 df_weights
+#             )
+# """"""
