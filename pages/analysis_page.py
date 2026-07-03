@@ -2,33 +2,63 @@ import pandas as pd
 import streamlit as st
 import plotly.express as px
 
-# 総摂取カロリー
-total_calories = df_meals["calories"].sum()
-# 平均体重
-average_weight = df_weights["weight"].mean()
-# 記録日数
-record_days = len(df_weights)
-# プロテイン
-total_protein = df_meals["protein"].sum()
-# 脂質
-total_fat = df_meals["fat"].sum()
-# 炭水化物
-total_carb = df_meals["carb"].sum()
-
-# 体重変化
-end_weight = None
-weight_change = None
-
 def create_kpi(
         df_meals,
         df_weights,
     ):
-        
+
+    # 総摂取カロリー
+    total_calories = df_meals["calories"].sum()
+    # 平均体重
+    average_weight = df_weights["weight"].mean()
+    # 記録日数
+    record_days = len(df_weights)
+    # プロテイン
+    total_protein = df_meals["protein"].sum()
+    # 脂質
+    total_fat = df_meals["fat"].sum()
+    # 炭水化物
+    total_carb = df_meals["carb"].sum()
+    # 体重変化
+    end_weight = None
+    weight_change = None
+
     #体重変化KPI
     if not df_weights.empty:
         start_weight = df_weights["weight"].iloc[0]
         end_weight = df_weights["weight"].iloc[-1]
         weight_change = end_weight - start_weight
+
+    st.subheader("健康サマリー")
+    
+    col1, col2, col3, col4 = st.columns(4)
+
+    with col1:
+        st.metric(
+            "総摂取カロリー",
+            f"{total_calories:.0f} kcal"
+        )
+
+    with col2:
+        st.metric(
+            "平均体重",
+            f"{average_weight:.1f} kg"
+        )
+
+    with col3:
+        st.metric(
+            "記録日数",
+            f"{record_days} 日"
+        )
+
+    with col4:
+        st.metric(
+            "体重変化",
+            f"{end_weight:.1f} kg"
+            if end_weight is not None else "-",
+            delta=f"{weight_change:+.1f} kg"
+            if weight_change is not None else "-"
+        )
 
 def create_pfc_chart(
         df_meals,
@@ -36,47 +66,50 @@ def create_pfc_chart(
 
         st.write("PFC集計")
 
-            st.write(
-                f"""
-                Protein : {total_protein:.1f} g
-                Fat : {total_fat:.1f} g
-                Carb : {total_carb:.1f} g
-                    """
-                )
+def create_pfc_summary(
+          df_meals,
+):
+    st.write(
+        f"""
+        Protein : {total_protein:.1f} g
+        Fat : {total_fat:.1f} g
+        Carb : {total_carb:.1f} g
+        """
+    )
+    
+    #円グラフの作成
+    if not df_meals.empty:
+
+        st.metric(
+                "体重変化",
+                f"{end_weight:.1f} kg",
+                delta=f"{weight_change:.1f} kg"
+            )
+
+        df_pfc = pd.DataFrame({
+            "nutrient":["protein","fat","carb"],
+            "amount":[
+                total_protein,
+                total_fat,
+                total_carb
+            ]
+            })
+
+        fig = px.pie(
+            df_pfc,
+            names="nutrient",
+            values="amount",
+            title="栄養素バランス"
+        )
+
+        st.plotly_chart(
+            fig,
+            width="stretch"
+        )
+
+    else:
+        st.info("食事データがありません")
             
-            #円グラフの作成
-            if not df_meals.empty:
-
-                st.metric(
-                    "体重変化",
-                    f"{end_weight:.1f} kg",
-                    delta=f"{weight_change:.1f} kg"
-                )
-
-                df_pfc = pd.DataFrame({
-                    "nutrient":["protein","fat","carb"],
-                    "amount":[
-                        total_protein,
-                        total_fat,
-                        total_carb
-                    ]
-                })
-
-                fig = px.pie(
-                    df_pfc,
-                    names="nutrient",
-                    values="amount",
-                    title="栄養素バランス"
-                )
-
-                st.plotly_chart(
-                    fig,
-                    width="stretch"
-                )
-
-            else:
-                st.info("食事データがありません")
-
 def create_meal_type_chart(
             df_meals,
             ):
@@ -114,7 +147,7 @@ def create_monthly_chart(
                     .dt.strftime("%Y-%m")
                 )
 
-                monthly_calories = (
+    monthly_calories = (
                     df_month
                     .groupby("month")["calories"]
                     .sum()
@@ -223,7 +256,6 @@ def analysis_page(
         df_meals,
         df_weights,
 ):
-
     tab1, tab2, tab3 = st.tabs(
         ["サマリー", "食事分析", "体重分析"]
     )
