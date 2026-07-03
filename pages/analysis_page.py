@@ -13,12 +13,6 @@ def create_kpi(
     average_weight = df_weights["weight"].mean()
     # 記録日数
     record_days = len(df_weights)
-    # プロテイン
-    total_protein = df_meals["protein"].sum()
-    # 脂質
-    total_fat = df_meals["fat"].sum()
-    # 炭水化物
-    total_carb = df_meals["carb"].sum()
     # 体重変化
     end_weight = None
     weight_change = None
@@ -59,16 +53,18 @@ def create_kpi(
             delta=f"{weight_change:+.1f} kg"
             if weight_change is not None else "-"
         )
-
-def create_pfc_chart(
-        df_meals,
-        ):
-
-        st.write("PFC集計")
-
+        
 def create_pfc_summary(
           df_meals,
 ):
+    # プロテイン
+    total_protein = df_meals["protein"].sum()
+    # 脂質
+    total_fat = df_meals["fat"].sum()
+    # 炭水化物
+    total_carb = df_meals["carb"].sum()
+    
+    st.write("PFC集計")
     st.write(
         f"""
         Protein : {total_protein:.1f} g
@@ -77,6 +73,10 @@ def create_pfc_summary(
         """
     )
     
+def create_pfc_chart(
+        df_meals,
+        ):
+
     #円グラフの作成
     if not df_meals.empty:
 
@@ -111,61 +111,61 @@ def create_pfc_summary(
         st.info("食事データがありません")
             
 def create_meal_type_chart(
-            df_meals,
-            ):
+        df_meals,
+    ):
 
-            # 食事区分別カロリー推移
-            meal_type_calories = (
-            df_meals.groupby("meal_type")["calories"]
-            .sum()
-            .reset_index()
-            )
+    # 食事区分別カロリー推移
+    meal_type_calories = (
+        df_meals.groupby("meal_type")["calories"]
+        .sum()
+        .reset_index()
+    )
 
-            fig  = px.bar(
-                meal_type_calories,
-                x="meal_type",
-                y="calories",
-                title="食事区分別カロリー"
-            )
+    fig  = px.bar(
+        meal_type_calories,
+        x="meal_type",
+        y="calories",
+        title="食事区分別カロリー"
+    )
 
-            st.plotly_chart(
-                fig,
-                width="stretch"
-            )
+    st.plotly_chart(
+        fig,
+        width="stretch"
+    )
 
 def create_monthly_chart(
-    df_meals,
+        df_meals,
     ):
             
-        #月別カロリー推移
-        if not df_meals.empty:
+    #月別カロリー推移
+    if not df_meals.empty:
 
-            df_month = df_meals.copy()
+        df_month = df_meals.copy()
 
-            df_month["month"] = (
-                    pd.to_datetime(df_month["date"])
-                    .dt.strftime("%Y-%m")
-                )
+        df_month["month"] = (
+                pd.to_datetime(df_month["date"])
+                .dt.strftime("%Y-%m")
+            )
 
     monthly_calories = (
-                    df_month
-                    .groupby("month")["calories"]
-                    .sum()
-                    .reset_index()
-                )
+        df_month
+        .groupby("month")["calories"]
+        .sum()
+        .reset_index()
+    )
                 
-                fig = px.line(
-                        monthly_calories,
-                        x="month",
-                        y="calories",
-                        title="月別カロリー推移",
-                        markers=True
-                    )
+    fig = px.line(
+            monthly_calories,
+            x="month",
+            y="calories",
+            title="月別カロリー推移",
+            markers=True
+        )
 
-                st.plotly_chart(
-                    fig,
-                    width="stretch"
-                )
+    st.plotly_chart(
+        fig,
+        width="stretch"
+    )
 
 def create_daily_chart(
     df_meals,
@@ -192,8 +192,8 @@ def create_daily_chart(
         #グラフの表示
         st.plotly_chart(fig)
 
-        else:
-            st.info("食事データがありません")
+    else:
+        st.info("食事データがありません")
 
 def create_weight_chart(
     df_weights,
@@ -210,13 +210,13 @@ def create_weight_chart(
             markers = True
         )
 
-            #x軸をカテゴリ軸として扱う
-            fig.update_xaxes(type='category')
+        #x軸をカテゴリ軸として扱う
+        fig.update_xaxes(type='category')
 
-            #グラフの表示
-            st.plotly_chart(fig)
-        else:
-            st.info("体重データがありません")
+        #グラフの表示
+        st.plotly_chart(fig)
+    else:
+        st.info("体重データがありません")
 
 def create_scatter_chart(
     df_meals,
@@ -230,12 +230,11 @@ def create_scatter_chart(
         )
 
     #カロリーと体重の関係分析
-    #体重とカロリーを日付で結合
     merged_df = pd.merge(
-    daily_calories,
-    df_weights,
-    on="date",
-    how="inner"
+        daily_calories,
+        df_weights,
+        on="date",
+        how="inner"
     )
 
     #散布図
