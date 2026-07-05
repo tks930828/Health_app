@@ -3,6 +3,8 @@ import streamlit as st
 import plotly.express as px
 
 from charts.kpi_chart import create_kpi
+from charts.pfc_chart import create_pfc_summary
+from charts.pfc_chart import create_pfc_chart
 
 def analysis_page(
         df_meals,
@@ -13,63 +15,15 @@ def analysis_page(
         df_meals,
         df_weights
     )
-        
-def create_pfc_summary(
+
+    create_pfc_summary(
           df_meals,
-):
-    # プロテイン
-    total_protein = df_meals["protein"].sum()
-    # 脂質
-    total_fat = df_meals["fat"].sum()
-    # 炭水化物
-    total_carb = df_meals["carb"].sum()
-    
-    st.write("PFC集計")
-    st.write(
-        f"""
-        Protein : {total_protein:.1f} g
-        Fat : {total_fat:.1f} g
-        Carb : {total_carb:.1f} g
-        """
     )
-    
-def create_pfc_chart(
+
+    create_pfc_chart(
         df_meals,
-        ):
+    )
 
-    #円グラフの作成
-    if not df_meals.empty:
-
-        st.metric(
-                "体重変化",
-                f"{end_weight:.1f} kg",
-                delta=f"{weight_change:.1f} kg"
-            )
-
-        df_pfc = pd.DataFrame({
-            "nutrient":["protein","fat","carb"],
-            "amount":[
-                total_protein,
-                total_fat,
-                total_carb
-            ]
-            })
-
-        fig = px.pie(
-            df_pfc,
-            names="nutrient",
-            values="amount",
-            title="栄養素バランス"
-        )
-
-        st.plotly_chart(
-            fig,
-            width="stretch"
-        )
-
-    else:
-        st.info("食事データがありません")
-            
 def create_meal_type_chart(
         df_meals,
     ):
