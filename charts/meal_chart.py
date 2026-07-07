@@ -2,6 +2,7 @@ import pandas as pd
 import streamlit as st
 import plotly.express as px
 
+#食事分析
 def create_meal_type_chart(
         df_meals,
     ):

@@ -2,7 +2,7 @@ import pandas as pd
 import streamlit as st
 import plotly.express as px
 
-
+#栄養素バランス
 def create_pfc_summary(
         df_meals,
 ):

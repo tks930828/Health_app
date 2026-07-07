@@ -1,5 +1,6 @@
 import streamlit as st
 
+#kpi
 def create_kpi(
         df_meals,
         df_weights,
