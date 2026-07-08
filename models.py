@@ -21,3 +21,11 @@ class Weightlog(Base):
     id = Column(Integer,primary_key=True)
     date = Column(Date)
     weight = Column(Float)
+
+#目標体重管理のテーブル定義
+class Goal(Base):
+    __tablename__ = "goals"
+
+    id = Column(Integer, primary_key=True)
+    target_weight = Column(Float)
+    target_date = Column(Date)
