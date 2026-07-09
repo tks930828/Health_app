@@ -27,5 +27,5 @@ class Goal(Base):
     __tablename__ = "goals"
 
     id = Column(Integer, primary_key=True)
-    target_weight = Column(Float)
-    target_date = Column(Date)
+    target_weight = Column(Float, nullable=False)
+    target_date = Column(Date, nullable=False)
