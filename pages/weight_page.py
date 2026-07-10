@@ -2,6 +2,7 @@ import pandas as pd
 import streamlit as st
 
 from models import Weightlog
+from models import Goal
 from datetime import date
 
 def weight_page(session):
@@ -176,20 +177,18 @@ def weight_page(session):
         else:
             st.info("削除できるデータがありません")
         
-        return df_weights
-
 #--------------------------------------
-# 目標体重
-    with st.subheader("目標体重"):
+#目標体重
+    st.subheader("目標体重")
 
-        goal = session.query(Goal).first()
+    goal = session.query(Goal).first()
 
-        if goal:
-            default_weight = goal.target_weight
-            default_date = goal.target_date
-        else:
-            default_weight = 60.0
-            default_date = date.today()
+    if goal:
+        default_weight = goal.target_weight
+        default_date = goal.target_date
+    else:
+        default_weight = 60.0
+        default_date = date.today()
         
         target_weight = st.number_input(
             "目標体重(kg)",
@@ -213,11 +212,11 @@ def weight_page(session):
                 target_weight=target_weight,
                 target_date=target_date
                 )
-            session.add(goal)
-
-        session.commit()
-        st.success("目標を保存しました")
-        st.rerun()
+                session.add(goal)
+        
+            session.commit()
+            st.success("目標を保存しました")
+            st.rerun()
 
         if goal:
             st.info(
@@ -227,3 +226,5 @@ def weight_page(session):
                 目標日：{goal.target_date}
                 """
             )
+    #作ったDataFrameを呼び出し元に返す
+    return df_weights
