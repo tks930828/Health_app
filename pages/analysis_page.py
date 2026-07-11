@@ -13,6 +13,7 @@ from charts.weight_chart import create_weight_chart
 from charts.weight_chart import create_scatter_chart
 
 def analysis_page(
+        session,
         df_meals,
         df_weights,
 ):
@@ -22,6 +23,7 @@ def analysis_page(
 
     with tab1:
         create_kpi(
+            session,
             df_meals,
             df_weights
         )

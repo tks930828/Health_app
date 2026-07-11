@@ -1,7 +1,10 @@
 import streamlit as st
 
+from models import Goal
+
 #kpi
 def create_kpi(
+        session,
         df_meals,
         df_weights,
 ):
@@ -27,10 +30,18 @@ def create_kpi(
         start_weight = df_weights["weight"].iloc[0]
         end_weight = df_weights["weight"].iloc[-1]
         weight_change = end_weight - start_weight
+    
+    #目標体重
+    goal = session.query(Goal).first()
+    remaining = None
+
+    if goal and not df_weights.empty:
+        current_weight = df_weights["weight"].iloc[-1]
+        remaining = current_weight - goal.target_weight
 
     st.subheader("健康サマリー")
 
-    col1, col2, col3, col4 = st.columns(4)
+    col1, col2, col3, col4 ,col5 = st.columns(5)
 
     with col1:
         st.metric(
@@ -64,3 +75,12 @@ def create_kpi(
                 else "-"
             )
         )
+    
+    with col5:
+        st.metric(
+        "目標まで",
+        f"{remaining:.1f} kg"
+        if remaining is not None
+        else "-"
+    )
+        st.write(f"あと {remaining:.1f} kg")

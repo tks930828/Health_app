@@ -28,6 +28,7 @@ with tab2:
 
 with tab3:
     analysis_page(
+        session,
         df_meals,
         df_weights
     )
