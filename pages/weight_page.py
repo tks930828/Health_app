@@ -190,41 +190,41 @@ def weight_page(session):
         default_weight = 60.0
         default_date = date.today()
         
-        target_weight = st.number_input(
-            "目標体重(kg)",
-            min_value=30.0,
-            max_value=200.0,
-            value=default_weight,
-            step=0.1
-        )
+    target_weight = st.number_input(
+        "目標体重(kg)",
+        min_value=30.0,
+        max_value=200.0,
+        value=default_weight,
+        step=0.1
+    )
 
-        target_date = st.date_input(
-            "目標日",
-            value=default_date
-        )
+    target_date = st.date_input(
+        "目標日",
+        value=default_date
+    )
 
-        if st.button("保存"):
-            if goal:
-                goal.target_weight = target_weight
-                goal.target_date = target_date
-            else:
-                goal = Goal(
-                target_weight=target_weight,
-                target_date=target_date
-                )
-                session.add(goal)
-        
-            session.commit()
-            st.success("目標を保存しました")
-            st.rerun()
-
+    if st.button("保存"):
         if goal:
-            st.info(
-                f"""
-                現在の目標
-                目標体重：{goal.target_weight:.1f} kg
-                目標日：{goal.target_date}
-                """
+            goal.target_weight = target_weight
+            goal.target_date = target_date
+        else:
+            goal = Goal(
+            target_weight=target_weight,
+            target_date=target_date
             )
+            session.add(goal)
+    
+        session.commit()
+        st.success("目標を保存しました")
+        st.rerun()
+
+    if goal:
+        st.info(
+            f"""
+            現在の目標
+            目標体重：{goal.target_weight:.1f} kg
+            目標日：{goal.target_date}
+            """
+        )
     #作ったDataFrameを呼び出し元に返す
     return df_weights

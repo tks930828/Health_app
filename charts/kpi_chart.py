@@ -83,4 +83,3 @@ def create_kpi(
         if remaining is not None
         else "-"
     )
-        st.write(f"あと {remaining:.1f} kg")
