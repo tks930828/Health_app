@@ -11,6 +11,7 @@ from charts.meal_chart import create_monthly_chart
 from charts.meal_chart import create_daily_chart
 from charts.weight_chart import create_weight_chart
 from charts.weight_chart import create_scatter_chart
+from charts.goal_chart import create_goal_progress
 
 def analysis_page(
         session,
@@ -28,14 +29,20 @@ def analysis_page(
             df_weights
         )
 
-        col1, col2 = st.columns(2)
+        col1, col2, col3 = st.columns(3)
 
         with col1:
+            create_goal_progress(
+            session,
+            df_weights,
+            )
+
+        with col2:
             create_pfc_chart(
                 df_meals
             )
 
-        with col2:
+        with col3:
             create_pfc_summary(
                 df_meals
             )
