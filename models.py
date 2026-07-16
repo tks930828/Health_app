@@ -29,3 +29,14 @@ class Goal(Base):
     id = Column(Integer, primary_key=True)
     target_weight = Column(Float, nullable=False)
     target_date = Column(Date, nullable=False)
+
+#プロフィール情報のテーブル定義
+class Profile(Base):
+    __tablename__ = "profiles"
+
+    id = Column(Integer, primary_key=True)
+
+    height = Column(Float)
+    age = Column(Integer)
+    sex = Column(String)
+    activity_level = Column(String)
