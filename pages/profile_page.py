@@ -31,8 +31,8 @@ def profile_page(session):
             profile = Profile(height=height)
             session.add(profile)
 
-    session.commit()
+        session.commit()
 
-    st.success("プロフィールを保存しました")
+        st.success("プロフィールを保存しました")
 
-    st.rerun()
+        st.rerun()
