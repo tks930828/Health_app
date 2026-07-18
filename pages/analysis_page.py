@@ -19,9 +19,8 @@ def analysis_page(
         df_weights,
 ):
     tab1, tab2, tab3 = st.tabs(
-        ["サマリー", "食事分析", "体重分析"]
-    )
-
+    ["サマリー", "食事分析", "体重分析"]
+)
     with tab1:
         create_kpi(
             session,
