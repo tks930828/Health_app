@@ -22,29 +22,34 @@ def analysis_page(
     ["サマリー", "食事分析", "体重分析"]
 )
     with tab1:
+
         create_kpi(
             session,
             df_meals,
             df_weights
         )
 
-        col1, col2, col3 = st.columns(3)
+        col1, col2 = st.columns(2)
 
         with col1:
             create_goal_progress(
-            session,
-            df_weights,
+                session,
+                df_weights
             )
 
         with col2:
-            create_pfc_chart(
-                df_meals
+            create_bmi(
+                session,
+                df_weights
             )
 
-        with col3:
-            create_pfc_summary(
-                df_meals
-            )
+        create_pfc_summary(
+            df_meals
+        )
+
+        create_pfc_chart(
+            df_meals
+        )
 
     with tab2:
 
