@@ -39,7 +39,7 @@ def profile_page(session):
         session.commit()
 
         st.success("プロフィールを保存しました")
-
+        
 #--------------------------------------
 #目標体重
     st.subheader("目標体重")

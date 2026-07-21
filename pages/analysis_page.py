@@ -12,6 +12,7 @@ from charts.meal_chart import create_daily_chart
 from charts.weight_chart import create_weight_chart
 from charts.weight_chart import create_scatter_chart
 from charts.goal_chart import create_goal_progress
+from charts.bmi_chart import create_bmi
 
 def analysis_page(
         session,
