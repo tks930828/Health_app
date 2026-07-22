@@ -27,6 +27,34 @@ def profile_page(session):
         step=0.1
     )
 
+    if profile:
+        default_age = profile.age
+    else:
+        default_age = 0
+
+    age = st.number_input(
+        "年齢",
+        min_value=1,
+        max_value=120,
+        value=default_age,
+    )
+
+    sex = st.selectbox(
+        "性別",
+        ["男性", "女性"],
+        index=...
+    )
+
+    activity_level = st.selectbox(
+        "活動レベル",
+        [
+            "低い",
+            "普通",
+            "高い"
+        ],
+        index=...
+    )
+
     if st.button("プロフィール保存"):
 
         if profile:
